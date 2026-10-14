@@ -1,40 +1,67 @@
-# CO2nsciente - Backend (Spring Boot + MySQL)
+# CO2nsciente — API Testing & QA
 
-Proyecto backend desarrollado para el curso de Spring Boot y SQL.  
-El objetivo es gestionar productos asociados a regiones, con soporte para creación, lectura, actualización y eliminación lógica (soft delete).
+## Descripción del proyecto
 
----
+Proyecto backend desarrollado con Java y Spring Boot, conectado a una base de datos MySQL, para gestionar productos mediante una API REST.
 
-## 🚀 Tecnologías utilizadas
+El proyecto se utiliza como práctica de **Quality Assurance (QA)** para diseñar y ejecutar pruebas de API, validar datos, verificar la persistencia en la base de datos y documentar defectos encontrados.
+
+> Proyecto personal de práctica. No corresponde a una experiencia con un cliente real.
+
+## Tecnologías y herramientas
+
 - Java 17
 - Spring Boot
 - Spring Data JPA
 - MySQL
+- MySQL Workbench
+- Postman
+- Google Sheets
 - Maven
 
----
+## Pruebas de API con Postman
 
-## 📦 Funcionalidades
-- Crear productos
-- Listar productos activos (no eliminados)
-- Buscar producto por ID
-- Actualizar producto
-- Eliminación lógica (marca `eliminado = true`)
-- Filtrar productos por región
+Se diseñaron y ejecutaron pruebas para verificar distintos comportamientos de la API:
 
----
+- **GET:** consulta de productos y búsqueda por identificador.
+- **POST:** creación de productos y validación de datos de entrada.
+- **PUT:** actualización de productos.
+- **DELETE:** eliminación lógica de productos.
+- Validación de códigos de respuesta HTTP.
+- Pruebas con datos válidos, inválidos y campos obligatorios.
+- Registro de comportamientos inesperados.
 
-## 🗄️ Base de datos
-Base utilizada: **tienda**
+## Verificación de base de datos con MySQL Workbench
 
-Tabla principal: **producto**
+Se realizaron consultas SQL para comprobar:
 
-Columnas:
-- `id` (BIGINT, PK, auto-increment)
-- `nombre` (VARCHAR)
-- `precio` (DOUBLE)
-- `descripcion` (VARCHAR)
-- `region` (VARCHAR)
-- `eliminado` (BOOLEAN)
+- Correspondencia entre las respuestas de la API y los datos almacenados.
+- Persistencia de productos nuevos.
+- Actualización de registros.
+- Eliminación lógica mediante el campo `eliminado`.
+- Asociación entre productos y categorías.
 
-Configuración en `application.properties`:
+## Evidencias de ejecución
+
+### Postman — Pruebas de API
+
+![Evidencia de pruebas de API en Postman](evidencias-test/pmCo2.png)
+
+### MySQL Workbench — Verificación de datos
+
+![Evidencia de verificaciones SQL en MySQL Workbench](evidencias-test/WORBENCHco2.png)
+
+## Documentación de QA
+
+La planilla contiene la documentación del trabajo realizado, incluyendo:
+
+- Historia de usuario, regla de negocio y criterios de aceptación.
+- Casos de prueba.
+- Defectos identificados y sus resultados.
+- Verificaciones de base de datos.
+
+**[Consultar la planilla de QA en Google Sheets](https://docs.google.com/spreadsheets/d/e/2PACX-1vQLmufcNJ4bV08u66loHUplYiMngSRHOW75r5wC53yv1lO_9727dZohpTuO4Z_w8_ynBNh4nzkAYyEt/pubhtml)**
+
+## Objetivo del proyecto
+
+Demostrar práctica en pruebas de API REST, diseño y ejecución de casos de prueba, validación de datos, consultas SQL y documentación de defectos como parte de mi portfolio de QA.
