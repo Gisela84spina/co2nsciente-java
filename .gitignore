@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+# Local environment variables
+.env
+.env.*
+!.env.example
+
+# Local configuration
+application-local.yml
+application-local.properties

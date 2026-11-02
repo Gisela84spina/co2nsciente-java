@@ -6,6 +6,8 @@ import com.co2nsciente.repository.ProductoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import com.co2nsciente.model.Categoria;
+import com.co2nsciente.repository.CategoriaRepository;
 
 import java.util.List;
 
@@ -13,11 +15,18 @@ import java.util.List;
 @Service
 public class ProductService {
 
-  private final ProductoRepository productoRepository;
-  private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
-  public ProductService(ProductoRepository repository) {
+  private final ProductoRepository productoRepository;
+  private final CategoriaRepository categoriaRepository;
+
+  private static final Logger logger =
+      LoggerFactory.getLogger(ProductService.class);
+
+  public ProductService(
+      ProductoRepository repository,
+      CategoriaRepository categoriaRepository) {
     this.productoRepository = repository;
+    this.categoriaRepository = categoriaRepository;
   }
 
 
@@ -63,10 +72,23 @@ public class ProductService {
 
   // -- Métodos de ESCRITURA (POST, PUT, DELETE) --
 
+
   public Producto crearProducto(Producto producto) {
-    // ... (Tu código para crear) ...
+    if (producto.getCategorias() != null) {
+      List<Categoria> categoriasExistentes = producto.getCategorias()
+          .stream()
+          .map(categoria -> categoriaRepository.findById(categoria.getId())
+              .orElseThrow(() -> new ResourceNotFoundException(
+                  "Categoría con ID " + categoria.getId() + " no encontrada."
+              )))
+          .toList();
+
+      producto.setCategorias(categoriasExistentes);
+    }
+
     return productoRepository.save(producto);
   }
+
 
   public Producto editarProducto(Long id, Producto dataProducto) {
     logger.info("Intentando editar producto con ID {}", id);
@@ -86,11 +108,14 @@ public class ProductService {
     if (dataProducto.getDescripcion() != null) {
       producto.setDescripcion(dataProducto.getDescripcion());
     }
-    if (dataProducto.getCategoria() != null) {
-      producto.setCategoria(dataProducto.getCategoria());
+    if (dataProducto.getCategorias() != null) {
+      producto.setCategorias(dataProducto.getCategorias());
     }
     if (dataProducto.getRegion() != null) {
       producto.setRegion(dataProducto.getRegion());
+    }
+    if (dataProducto.getImagenUrl() != null) {
+      producto.setImagenUrl(dataProducto.getImagenUrl());
     }
 
 

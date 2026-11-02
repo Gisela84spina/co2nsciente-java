@@ -1,0 +1,528 @@
+{
+  "info": {
+    "_postman_id": "6eb1b626-63be-4212-95c7-2e93dbdd13ff",
+    "name": "co2nsciente-java - API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "28217588"
+  },
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "GET",
+          "item": [
+            {
+              "name": "GET - Product by ID - 200",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response is JSON\", function () {\n    pm.response.to.be.json;\n});\n\npm.test(\"Product has required fields\", function () {\n    const product = pm.response.json();\n\n    pm.expect(product).to.have.property(\"id\");\n    pm.expect(product).to.have.property(\"nombre\");\n    pm.expect(product).to.have.property(\"precio\");\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products/5",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GET - Product by ID - 404",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 404\", function () {\n    pm.response.to.have.status(404);\n});\n\npm.test(\"Error message is correct\", function () {\n    const response = pm.response.json();\n\n    pm.expect(response.message)\n        .to.eql(\"Producto con ID 99999 no encontrado o fue eliminado.\");\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    "99999"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "POST",
+          "item": [
+            {
+              "name": "POST - Create Product -  Valid",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response is JSON\", function () {\n    pm.response.to.be.json;\n});\n\npm.test(\"Product has required fields\", function () {\n    const product = pm.response.json();\n\n    pm.expect(product).to.have.property(\"id\");\n    pm.expect(product).to.have.property(\"nombre\");\n    pm.expect(product).to.have.property(\"precio\");\n});\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Producto QA para eliminar\",\n  \"region\": \"Buenos Aires\",\n  \"eliminado\": false,\n  \"precio\": 15000,\n  \"descripcion\": \"Producto creado para pruebas QA\",\n  \"categorias\": [{\n    \"id\": 1\n  }], \n  \"imagenUrl\": \"https://example.com/test-qa-ceibo.jpg\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "POST - Create Product -  Invalid Price",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message indicates invalid price\", function () {\n    const response = pm.response.json();\n\n    pm.expect(response.precio)\n        .to.eql(\"El precio debe ser mayor a 0\");\n});\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Test QA Ceibo\",\n  \"region\": \"Buenos Aires\",\n  \"eliminado\": false,\n  \"precio\": 0,\n  \"descripcion\": \"Producto creado para pruebas QA\",\n  \"categorias\": [\n    {\n      \"id\": 1,\n      \"nombre\": \"Arboles\"\n    }\n  ],\n  \"imagenUrl\": \"https://example.com/test-qa-ceibo.jpg\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "POST - Create Product -  Missing Price",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "\npm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message indicates price is required\", function () {\n    const response = pm.response.json();\n\n    const responseText = JSON.stringify(response).toLowerCase();\n\n    pm.expect(responseText).to.include(\"precio\");\n});\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Test QA Ceibo\",\n  \"region\": \"Buenos Aires\",\n  \"eliminado\": false,\n  \n  \"descripcion\": \"Producto creado para pruebas QA\",\n  \"categorias\": [\n    {\n      \"id\": 1,\n      \"nombre\": \"Arboles\"\n    }\n  ],\n  \"imagenUrl\": \"https://example.com/test-qa-ceibo.jpg\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "POST - Create Product - Missing Name",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "\npm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message indicates invalid name\", function () {\n    const response = pm.response.json();\n\n    pm.expect(response.nombre).to.eql(\n         \"El nombre es obligatorio\"\n    );\n});\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"\",\n  \"region\": \"Buenos Aires\",\n  \"eliminado\": false,\n  \"precio\": 15000,\n  \"descripcion\": \"Producto creado para pruebas QA\",\n  \"categorias\": [\n    {\n      \"id\": 1,\n      \"nombre\": \"Arboles\"\n    }\n  ],\n  \"imagenUrl\": \"https://example.com/test-qa-ceibo.jpg\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "POST - Create Product - Invalid Name",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message indicates invalid name\", function () {\n    const response = pm.response.json();\n\n    pm.expect(response.nombre)\n        .to.eql(\"El nombre debe tener entre 3 y 30 caracteres\");\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"a\",\n  \"region\": \"Buenos Aires\",\n  \"eliminado\": false,\n  \"precio\": 15000,\n  \"descripcion\": \"Producto creado para pruebas QA\",\n  \"categorias\": [\n    {\n      \"id\": 1,\n      \"nombre\": \"Arboles\"\n    }\n  ],\n  \"imagenUrl\": \"https://example.com/test-qa-ceibo.jpg\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "POST - Create Product - Invalid Name - Numbers only",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message indicates invalid name\", function () {\n    const response = pm.response.json();\n\n    pm.expect(response.nombre)\n        .to.eql(\"El nombre debe contener al menos algunas letras\");\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"123\",\n  \"region\": \"Buenos Aires\",\n  \"eliminado\": false,\n  \"precio\": 15000,\n  \"descripcion\": \"Producto creado para pruebas QA\",\n  \"categorias\": [\n    {\n      \"id\": 1,\n      \"nombre\": \"Arboles\"\n    }\n  ],\n  \"imagenUrl\": \"https://example.com/test-qa-ceibo.jpg\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "POST - Create Product - Invalid Price - Non numeric",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message indicates invalid price\", function () {\n    const response = pm.response.json();\n    pm.expect(response.error).to.eql(\"Bad Request\");\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Titulo para testear\",\n  \"region\": \"Buenos Aires\",\n  \"eliminado\": false,\n  \"precio\": \"abc\",\n  \"descripcion\": \"Producto creado para pruebas QA\",\n  \"categorias\": [\n    {\n      \"id\": 1,\n      \"nombre\": \"Arboles\"\n    }\n  ],\n  \"imagenUrl\": \"https://example.com/test-qa-ceibo.jpg\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "PUT",
+          "item": [
+            {
+              "name": "Update product - valid",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response contains updated product name\", function () {\n    const response = pm.response.json();\n    pm.expect(response.nombre).to.eql(\"Producto QA Actualizado\");\n});\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 52,\n  \"nombre\": \"Producto QA Actualizado\",\n  \"region\": \"Argentina\",\n  \"eliminado\": false,\n  \"precio\": 1500,\n  \"descripcion\": \"Producto actualizado para pruebas de QA\",\n  \"categorias\": [],\n  \"imagenUrl\": \"https://example.com/producto.jpg\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products/52",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    "52"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update product - ID not found",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "\npm.test(\"Status code is 404\", function () {\n    pm.response.to.have.status(404);\n});\n\npm.test(\"Error response is returned\", function () {\n    const response = pm.response.json();\n    pm.expect(response).to.be.an(\"object\");\n});\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 52,\n  \"nombre\": \"Producto QA Actualizado\",\n  \"region\": \"Argentina\",\n  \"eliminado\": false,\n  \"precio\": 1500,\n  \"descripcion\": \"Producto actualizado para pruebas de QA\",\n  \"categorias\": [],\n  \"imagenUrl\": \"https://example.com/producto.jpg\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    "99999"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "DELETE",
+          "item": [
+            {
+              "name": "Delete product - valid",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "\npm.test(\"Status code is 200 or 204\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\n});\n\npm.test(\"Delete request completed successfully\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\n});\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products/45",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    "45"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete product - ID not found",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "\npm.test(\"Status code is 404\", function () {\n    pm.response.to.have.status(404);\n});\n\npm.test(\"Error response is returned\", function () {\n    const response = pm.response.json();\n    pm.expect(response).to.be.an(\"object\");\n});\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    "99999"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Bugs",
+          "item": [
+            {
+              "name": "BUG-01 - Create product with null category",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "\npm.test(\"The API returns a valid HTTP status\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400, 500]);\n});\n\npm.test(\"The response time is less than 3000 ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(3000);\n});\n\n\npm.test(\"Product is created without categories\", function () {\n    pm.response.to.have.status(200);\n    const response = pm.response.json();\n    pm.expect(response.categorias).to.be.null;\n});\n\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Test QA Ceibo\",\n  \"region\": \"Buenos Aires\",\n  \"eliminado\": false,\n  \"precio\": 123,\n  \"descripcion\": \"Producto creado para pruebas QA\",\n  \"categorias\": null,\n  \"imagenUrl\": \"https://example.com/test-qa-ceibo.jpg\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
